@@ -162,10 +162,11 @@ http.createServer((req, res) => {
   console.log('Request:', url)
 
   // ✅ Validate credentials
-  const hasUser = url.includes('username=testuser')
-  const hasPass = url.includes('password=testpass')
+  // API calls pass credentials as query params; stream URLs pass them in the path (/live/user/pass/id.ext)
+  const hasQueryCreds = url.includes('username=testuser') && url.includes('password=testpass')
+  const hasPathCreds = url.startsWith('/live/testuser/testpass/')
 
-  if (!hasUser || !hasPass) {
+  if (!hasQueryCreds && !hasPathCreds) {
     res.writeHead(401)
     res.end(JSON.stringify({ user_info: { auth: 0 } }))
     return
